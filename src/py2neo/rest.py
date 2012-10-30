@@ -114,9 +114,11 @@ class BadRequest(ValueError):
 
     def __str__(self):
         if self.exception and self.message:
-            return "{0}: {1}\nfrom {2}".format(self.exception, self.message, self.uri)
+            return "{0}: {1}\ntrace:\n{2}\nfrom {3}".format(
+                    self.exception, self.message, self.stacktrace, self.uri)
         elif self.exception:
-            return repr(self.exception)
+            return "{0}\ntrace:\n{2}\nfrom {3}".format(
+                    self.exception, self.stacktrace, self.uri)
         else:
             return "id: {0} body: {1}\nfrom {2}".format(self.id, repr(self._data), self.uri)
 
