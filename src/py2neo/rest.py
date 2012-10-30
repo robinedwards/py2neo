@@ -86,7 +86,7 @@ class BadRequest(ValueError):
     """ Exception triggered by a 400 HTTP response status.
     """
 
-    def __init__(self, data, id_=None):
+    def __init__(self, uri, data, id_=None):
         """
         :param data: information describing the fault identified
         :param id_:  unique request ID
@@ -97,6 +97,7 @@ class BadRequest(ValueError):
             logger.debug("Bad request:\n{0}".format(data))
         ValueError.__init__(self)
         self.id = id_
+        self.uri = uri
         try:
             self.exception = data["exception"]
         except KeyError:
@@ -113,11 +114,11 @@ class BadRequest(ValueError):
 
     def __str__(self):
         if self.exception and self.message:
-            return "{0}: {1}".format(self.exception, self.message)
+            return "{0}: {1}\nfrom {2}".format(self.exception, self.message, self.uri)
         elif self.exception:
             return repr(self.exception)
         else:
-            return repr(self._data)
+            return "id: {0} body: {1}\nfrom {2}".format(self.id, repr(self._data), self.uri)
 
 
 class ResourceNotFound(LookupError):
@@ -277,7 +278,7 @@ class Response(object):
             self.body = body
             self.id = id
         elif self.status == 400:
-            raise BadRequest(body, id_=id)
+            raise BadRequest(uri, body, id_=id)
         elif self.status == 404:
             raise ResourceNotFound(uri, id_=id)
         elif self.status == 409:
