@@ -315,7 +315,7 @@ class Client(object):
 
     def _https_connection(self, netloc, reconnect=False):
         if netloc not in self.https or reconnect:
-            self.https[netloc] = httplib.HTTPSConnection(netloc, timeout=http_timeouts.get(netloc))
+            self.https[netloc] = httplib.HTTPSConnection(netloc, timeout=10)
         return self.https[netloc]
 
     def _send_request(self, method, uri, data=None):
