@@ -280,6 +280,7 @@ class Response(object):
             self.body = body
             self.id = id
         elif self.status == 400:
+            logger.error(uri, body)
             raise BadRequest(uri, body, id_=id)
         elif self.status == 404:
             raise ResourceNotFound(uri, id_=id)
